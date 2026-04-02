@@ -1,9 +1,30 @@
 let inventario = JSON.parse(localStorage.getItem('stock_data')) || [];
 let cajaTotal = parseFloat(localStorage.getItem('stock_caja')) || 0;
 let gananciaReal = parseFloat(localStorage.getItem('stock_ganancia_real')) || 0;
+let monedaActual = localStorage.getItem('currency') || '€';
 
-window.onload = () => actualizarInterfaz();
+window.onload = () => {
+    actualizarInterfaz();
+    initPWA();
+};
 
+// --- NAVEGACIÓN ---
+function switchView(viewId) {
+    document.querySelectorAll('.app-view').forEach(view => view.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
+    
+    document.getElementById(viewId).classList.add('active');
+    if (event) event.currentTarget.classList.add('active');
+}
+
+// --- MONEDA ---
+function toggleCurrency() {
+    monedaActual = (monedaActual === '€') ? '$' : '€';
+    localStorage.setItem('currency', monedaActual);
+    actualizarInterfaz();
+}
+
+// --- LÓGICA DE STOCK ---
 function procesarEntrada() {
     const nombre = document.getElementById('nombreProd').value;
     const formatoCompra = document.getElementById('formatoCompra').value;
@@ -38,11 +59,11 @@ function procesarEntrada() {
             stock: stockFinal,
             precioCompra: costeUnitario,
             precioVenta: pVenta,
-            loteRecompra: lote,
-            esCaja: formatoVenta === 'completa'
+            loteRecompra: lote
         });
         guardarYActualizar();
         resetearFormulario();
+        switchView('view-inventory');
     }
 }
 
@@ -53,7 +74,7 @@ function modificarStock(index, cambio) {
         gananciaReal += (p.precioVenta - p.precioCompra);
         p.stock--;
     } else if (cambio === 1) {
-        p.stock += (p.loteRecompra || 1);
+        p.stock += p.loteRecompra;
     }
     guardarYActualizar();
 }
@@ -71,21 +92,22 @@ function actualizarInterfaz() {
     lista.innerHTML = '';
     let inversionStock = 0;
 
+    // Actualizar símbolos de moneda
+    document.querySelectorAll('.simbolo').forEach(el => el.textContent = monedaActual);
+    document.getElementById('btnMoneda').textContent = `Cambiar Moneda (Actual: ${monedaActual})`;
+
     inventario.forEach((prod, i) => {
         inversionStock += (prod.stock * prod.precioCompra);
         lista.innerHTML += `
             <div class="gasto-item">
                 <div class="info">
-                    <strong>${prod.esCaja ? '📦' : '🛍️'} ${prod.nombre}</strong><br>
-                    <small>${prod.precioVenta.toFixed(2)}€ | Lote: +${prod.loteRecompra}</small>
+                    <strong>${prod.nombre}</strong><br>
+                    <small>Stock: ${prod.stock} | ${prod.precioVenta.toFixed(2)}${monedaActual}</small>
                 </div>
-                <div class="controls">
-                    <div class="counter">
-                        <button onclick="modificarStock(${i}, -1)">-</button>
-                        <span class="${prod.stock === 0 ? 'empty' : ''}">${prod.stock}</span>
-                        <button onclick="modificarStock(${i}, 1)">+</button>
-                    </div>
-                    <button class="delete-btn" onclick="borrarProducto(${i})">🗑️</button>
+                <div class="counter">
+                    <button onclick="modificarStock(${i}, -1)">-</button>
+                    <span>${prod.stock}</span>
+                    <button onclick="modificarStock(${i}, 1)">+</button>
                 </div>
             </div>`;
     });
@@ -101,20 +123,6 @@ function toggleLogicaCompra() {
     document.getElementById('seccionCaja').style.display = esCaja ? 'block' : 'none';
 }
 
-function borrarProducto(i) {
-    if (confirm("¿Eliminar producto?")) {
-        inventario.splice(i, 1);
-        guardarYActualizar();
-    }
-}
-
-function limpiarInventario() {
-    if (confirm("¿Reiniciar todo el sistema? Se borrarán ventas y stock.")) {
-        localStorage.clear();
-        location.reload();
-    }
-}
-
 function filtrarProductos() {
     const filtro = document.getElementById('buscador').value.toLowerCase();
     document.querySelectorAll('.gasto-item').forEach(item => {
@@ -123,9 +131,30 @@ function filtrarProductos() {
 }
 
 function resetearFormulario() {
-    document.getElementById('nombreProd').value = '';
-    document.getElementById('precioCompraTotal').value = '';
-    document.getElementById('precioVentaFinal').value = '';
-    document.getElementById('udsPorCaja').value = '';
-    document.getElementById('cantidadCajas').value = '';
+    document.querySelectorAll('#view-add input').forEach(i => i.value = '');
+}
+
+function limpiarInventario() {
+    if (confirm("¿Borrar todo el historial y productos?")) {
+        localStorage.clear();
+        location.reload();
+    }
+}
+
+// --- PWA ANDROID ---
+let deferredPrompt;
+function initPWA() {
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        document.getElementById('install-banner').style.display = 'flex';
+    });
+}
+
+async function installApp() {
+    if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt = null;
+        document.getElementById('install-banner').style.display = 'none';
+    }
 }

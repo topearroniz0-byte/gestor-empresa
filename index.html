@@ -3,67 +3,105 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Stock Byte - Control de Inventario</title>
+    <title>Stock Byte Pro</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#10b981">
 </head>
 <body>
     <div class="container">
+        <div id="install-banner" class="install-card" style="display: none;">
+            <span>📲 Instalar Stock Byte en Android</span>
+            <button onclick="installApp()" class="btn-mini">Descargar</button>
+        </div>
+
         <header class="main-header">
-            <img src="logo.png" alt="Logo Stock Byte" class="app-logo">
-            <p class="app-description">
-                Gestiona tus existencias en tiempo real. Añade productos, controla el stock y visualiza el valor de tu almacén.
-            </p>
+            <img src="logo.png" alt="Logo" class="app-logo">
         </header>
 
-        <div class="total-badge">
-            <small>Valor Total del Stock</small>
-            <h2><span id="valorTotal">0.00</span>€</h2>
-            <p>Artículos diferentes: <span id="totalArticulos">0</span></p>
-        </div>
-
-        <div class="total-badge secondary">
-            <small>Ventas Realizadas (Caja)</small>
-            <h2><span id="cajaActual">0.00</span>€</h2>
-            <p>Ganancia neta: <span id="gananciaReal">0.00</span>€</p>
-        </div>
-
-        <div class="card input-card">
-            <input type="text" id="nombreProd" placeholder="Nombre del producto (ej: Monster)">
-            
-            <div class="input-group">
-                <select id="formatoCompra" onchange="toggleLogicaCompra()">
-                    <option value="suelto">Producto Suelto</option>
-                    <option value="caja">Compra por Caja</option>
-                </select>
-                <select id="formatoVenta">
-                    <option value="unidad">Venta por Unidad</option>
-                    <option value="completa">Venta por Caja</option>
-                </select>
-            </div>
-
-            <div id="seccionCaja" style="display: none;">
-                <div class="input-group">
-                    <input type="number" id="udsPorCaja" placeholder="Uds por caja">
-                    <input type="number" id="cantidadCajas" placeholder="Nº de cajas">
+        <section id="view-inventory" class="app-view active">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <small>Caja Hoy</small>
+                    <h2 id="cajaActual">0.00</h2><span class="simbolo">€</span>
+                </div>
+                <div class="stat-card">
+                    <small>Ganancia</small>
+                    <h2 id="gananciaReal">0.00</h2><span class="simbolo">€</span>
                 </div>
             </div>
 
-            <div class="input-group">
-                <input type="number" id="precioCompraTotal" placeholder="Coste Compra (€)" step="0.01">
-                <input type="number" id="precioVentaFinal" placeholder="PVP Venta (€)" step="0.01">
+            <div class="card list-card">
+                <div class="list-header">
+                    <input type="text" id="buscador" placeholder="🔍 Buscar producto..." oninput="filtrarProductos()">
+                </div>
+                <div id="listaProductos"></div>
             </div>
-            <button class="btn-add" onclick="procesarEntrada()">Añadir al Inventario</button>
-        </div>
+        </section>
 
-        <div class="card list-card">
-            <div class="list-header">
-                <h3>Inventario</h3>
-                <input type="text" id="buscador" placeholder="🔍 Buscar..." oninput="filtrarProductos()" style="width: 150px; padding: 5px;">
+        <section id="view-add" class="app-view">
+            <div class="card">
+                <h3>📦 Nuevo Ingreso</h3>
+                <input type="text" id="nombreProd" placeholder="Nombre del producto">
+                
+                <div class="input-group">
+                    <select id="formatoCompra" onchange="toggleLogicaCompra()">
+                        <option value="suelto">Unidad Suelta</option>
+                        <option value="caja">Por Caja/Pack</option>
+                    </select>
+                    <select id="formatoVenta">
+                        <option value="unidad">Vender por Unidad</option>
+                        <option value="completa">Vender Pack entero</option>
+                    </select>
+                </div>
+
+                <div id="seccionCaja" style="display: none;">
+                    <div class="input-group">
+                        <input type="number" id="udsPorCaja" placeholder="Uds por caja">
+                        <input type="number" id="cantidadCajas" placeholder="Nº de cajas">
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <input type="number" id="precioCompraTotal" placeholder="Coste total">
+                    <input type="number" id="precioVentaFinal" placeholder="PVP Venta">
+                </div>
+                <button class="btn-add" onclick="procesarEntrada()">Registrar en Stock</button>
             </div>
-            <div id="listaProductos"></div>
-        </div>
+        </section>
 
-        <button onclick="limpiarInventario()" class="btn-clear">Vaciar Datos del Sistema</button>
+        <section id="view-settings" class="app-view">
+            <div class="card">
+                <h3>⚙️ Configuración</h3>
+                
+                <button onclick="toggleCurrency()" id="btnMoneda" class="btn-currency">
+                    Cambiar Moneda (Actual: €)
+                </button>
+
+                <div class="stat-row">
+                    <span>Inversión en Stock:</span>
+                    <div><strong id="valorTotal">0.00</strong><span class="simbolo">€</span></div>
+                </div>
+                <div class="stat-row">
+                    <span>Artículos Totales:</span>
+                    <strong id="totalArticulos">0</strong>
+                </div>
+                <hr>
+                <button onclick="limpiarInventario()" class="btn-clear">Borrar Todos los Datos</button>
+            </div>
+        </section>
+
+        <nav class="bottom-nav">
+            <button onclick="switchView('view-inventory')" class="nav-item active">
+                <i>🏠</i><span>Ventas</span>
+            </button>
+            <button onclick="switchView('view-add')" class="nav-item">
+                <i>➕</i><span>Añadir</span>
+            </button>
+            <button onclick="switchView('view-settings')" class="nav-item">
+                <i>📊</i><span>Admin</span>
+            </button>
+        </nav>
     </div>
     <script src="script.js"></script>
 </body>

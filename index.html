@@ -8,6 +8,7 @@
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#10b981">
     <link rel="apple-touch-icon" href="logo.png">
+    <script src="https://unpkg.com/html5-qrcode"></script>
 </head>
 <body>
 
@@ -63,7 +64,18 @@
     <div class="card">
         <h3>+ Nuevo Producto</h3>
         <input type="text" id="nombreProd" placeholder="Nombre del producto">
-        
+        <div class="input-group">
+    <label>Código de Barras</label>
+    <div style="display: flex; gap: 10px;">
+        <input type="text" id="codigoProd" placeholder="Escanea o escribe el código">
+        <button onclick="abrirEscaner()" class="btn-scan">📷</button>
+    </div>
+</div>
+
+<div id="reader-container" style="display: none; margin: 20px 0;">
+    <div id="reader" style="width: 100%;"></div>
+    <button onclick="cerrarEscaner()" class="btn-delete-all" style="background: #ef4444;">Cancelar Escaneo</button>
+</div>
         <label style="display:block; margin-bottom:8px; font-size:0.8rem; color:var(--accent);">Formato de compra:</label>
         <select id="tipoEntrada" onchange="toggleCajaInput()">
             <option value="unidad">Unidad suelta</option>

@@ -230,3 +230,18 @@ input:focus { border-color: var(--accent); }
 #btnNavInstall {
     color: var(--primary); /* Azul para diferenciarlo de Inicio y Añadir */
 }
+.btn-scan {
+    background: var(--primary);
+    border: none;
+    border-radius: 10px;
+    padding: 0 15px;
+    color: white;
+    font-size: 1.2rem;
+    cursor: pointer;
+}
+
+#reader {
+    border: 2px solid var(--accent) !important;
+    border-radius: 15px;
+    overflow: hidden;
+}

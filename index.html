@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Stock Byte - Control de Inventario</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="main-header">
+            <img src="logo.png" alt="Logo Stock Byte" class="app-logo">
+            <p class="app-description">
+                Gestiona tus existencias en tiempo real. Añade productos, controla el stock y visualiza el valor de tu almacén.
+            </p>
+        </header>
+
+        <div class="total-badge">
+            <small>Valor Total del Stock</small>
+            <h2><span id="valorTotal">0.00</span>€</h2>
+            <p>Productos registrados: <span id="totalArticulos">0</span></p>
+        </div>
+
+        <div class="total-badge secondary">
+            <small>Ventas Realizadas (Caja)</small>
+            <h2><span id="cajaActual">0.00</span>€</h2>
+            <p>Ganancia real: <span id="gananciaReal">0.00</span>€</p>
+        </div>
+
+        <div class="card input-card">
+            <input type="text" id="nombreProd" placeholder="Nombre del producto">
+            
+            <div class="input-group">
+                <select id="formatoCompra" onchange="toggleLogicaCompra()">
+                    <option value="suelto">Producto Suelto</option>
+                    <option value="caja">Caja de Productos</option>
+                </select>
+                <select id="formatoVenta">
+                    <option value="unidad">Venta por Unidad</option>
+                    <option value="completa">Venta por Caja</option>
+                </select>
+            </div>
+
+            <div id="seccionCaja" style="display: none;">
+                <div class="input-group">
+                    <input type="number" id="udsPorCaja" placeholder="Uds por caja">
+                    <input type="number" id="cantidadCajas" placeholder="Nº de cajas">
+                </div>
+            </div>
+
+            <div class="input-group">
+                <input type="number" id="precioCompraTotal" placeholder="Precio Compra (€)" step="0.01">
+                <input type="number" id="precioVentaFinal" placeholder="Precio Venta (€)" step="0.01">
+            </div>
+            <button class="btn-add" onclick="procesarEntrada()">Añadir al Inventario</button>
+        </div>
+
+        <div class="card list-card">
+            <div class="list-header">
+                <h3>Inventario</h3>
+                <input type="text" id="buscador" placeholder="🔍 Buscar..." oninput="filtrarProductos()">
+            </div>
+            <div id="listaProductos"></div>
+        </div>
+
+        <button onclick="limpiarInventario()" class="btn-clear">Vaciar Todo</button>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

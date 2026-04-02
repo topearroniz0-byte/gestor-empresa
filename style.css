@@ -1,71 +1,59 @@
+/* LOGO SOLICITADO A 60PX */
+.app-logo {
+    width: 300px;
+    height: auto;
+    display: block;
+    margin: 15px auto;
+}
+
 :root {
     --bg: #0b0f1a;
     --card-bg: #161c2d;
     --accent: #10b981;
     --text: #ffffff;
     --text-muted: #94a3b8;
-    --nav-bg: #1e293b;
 }
 
-body {
-    font-family: 'Segoe UI', system-ui, sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    margin: 0; padding: 0;
-    overflow-x: hidden;
+body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 15px; }
+
+
+/* BANNER DE DESCARGA */
+.install-banner {
+    background: #1e293b;
+    border: 1px solid var(--accent);
+    padding: 12px 15px;
+    border-radius: 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
 }
 
-.container { width: 100%; max-width: 480px; margin: 0 auto; padding-bottom: 90px; }
+.install-content { display: flex; align-items: center; gap: 10px; }
+.mini-logo { width: 25px; height: 25px; }
+.install-content strong { font-size: 0.85rem; display: block; }
+.install-content small { font-size: 0.7rem; color: var(--text-muted); }
 
-.app-view { display: none; padding: 20px; animation: slideUp 0.3s ease-out; }
-.app-view.active { display: block; }
-
-@keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-
-.stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
-.stat-card { background: var(--card-bg); padding: 15px; border-radius: 16px; border: 1px solid #2d3748; }
-.stat-card h2 { margin: 5px 0; color: var(--accent); display: inline-block; }
-
-.card { background: var(--card-bg); padding: 20px; border-radius: 20px; margin-bottom: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.4); }
-
-input, select { 
-    width: 100%; background: #0f172a; border: 1px solid #334155; 
-    color: white; padding: 14px; border-radius: 12px; margin-bottom: 15px; font-size: 1rem;
+.btn-download {
+    background: var(--accent);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 0.8rem;
+    cursor: pointer;
 }
 
-.btn-add { 
-    width: 100%; padding: 16px; background: var(--accent); 
-    border: none; color: white; font-weight: bold; border-radius: 12px; cursor: pointer;
+/* ESTILOS DE LA COPIA DE SEGURIDAD */
+.total-badge {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    padding: 20px; border-radius: 16px; text-align: center; margin-bottom: 12px;
 }
+.total-badge.secondary { background: linear-gradient(135deg, #10b981, #059669); }
 
-.gasto-item {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 15px; background: #1e293b; border-radius: 16px; margin-bottom: 12px;
-}
-
-.counter { display: flex; align-items: center; background: #0f172a; border-radius: 10px; padding: 4px; }
-.counter button { background: none; border: none; color: white; padding: 8px 15px; font-size: 1.2rem; cursor: pointer; }
-.counter span { font-weight: bold; min-width: 30px; text-align: center; }
-
-.bottom-nav {
-    position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
-    width: 100%; max-width: 480px; background: var(--nav-bg);
-    display: flex; justify-content: space-around; padding: 12px 0;
-    border-top: 1px solid #334155; z-index: 100;
-}
-
-.nav-item { background: none; border: none; color: var(--text-muted); display: flex; flex-direction: column; align-items: center; transition: 0.3s; }
-.nav-item.active { color: var(--accent); transform: translateY(-5px); }
-.nav-item i { font-style: normal; font-size: 1.4rem; margin-bottom: 4px; }
-
-.install-card {
-    background: linear-gradient(135deg, #10b981, #059669);
-    margin: 15px; padding: 15px; border-radius: 12px;
-    display: flex; justify-content: space-between; align-items: center; font-weight: bold;
-}
-
-.btn-mini { background: white; color: #059669; border: none; padding: 8px 16px; border-radius: 8px; font-weight: bold; }
-
-.btn-currency { width: 100%; padding: 12px; background: #334155; border: 1px solid var(--accent); color: var(--accent); border-radius: 10px; margin-bottom: 20px; font-weight: bold; }
-.stat-row { display: flex; justify-content: space-between; margin: 15px 0; font-size: 1.1rem; }
-.btn-clear { width: 100%; background: none; border: 1px solid #ff4757; color: #ff4757; padding: 12px; border-radius: 10px; margin-top: 20px; cursor: pointer; }
+.card { background: var(--card-bg); padding: 20px; border-radius: 16px; margin-bottom: 20px; border: 1px solid #2d3748; }
+.input-group { display: flex; gap: 10px; margin-bottom: 10px; }
+input, select { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white; }
+.btn-add { width: 100%; padding: 15px; background: var(--accent); border: none; color: white; font-weight: bold; border-radius: 8px; cursor: pointer; }
+.btn-clear { width: 100%; background: none; border: 1px solid #ff4757; color: #ff4757; padding: 12px; border-radius: 8px; cursor: pointer; }

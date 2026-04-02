@@ -1,108 +1,63 @@
+// REGISTRO DEL SERVICE WORKER
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+            .then(reg => console.log('Service Worker registrado'))
+            .catch(err => console.log('Error al registrar SW', err));
+    });
+}
+
 let inventario = JSON.parse(localStorage.getItem('stock_data')) || [];
 let cajaTotal = parseFloat(localStorage.getItem('stock_caja')) || 0;
 let gananciaReal = parseFloat(localStorage.getItem('stock_ganancia_real')) || 0;
-let monedaActual = localStorage.getItem('currency') || '€';
 
-window.onload = () => {
-    actualizarInterfaz();
-    initPWA();
-};
+window.onload = () => actualizarInterfaz();
 
-// --- NAVEGACIÓN ---
-function switchView(viewId) {
-    document.querySelectorAll('.app-view').forEach(view => view.classList.remove('active'));
-    document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
-    
-    document.getElementById(viewId).classList.add('active');
-    if (event) event.currentTarget.classList.add('active');
-}
-
-// --- MONEDA ---
-function toggleCurrency() {
-    monedaActual = (monedaActual === '€') ? '$' : '€';
-    localStorage.setItem('currency', monedaActual);
+function guardarYActualizar() {
+    localStorage.setItem('stock_data', JSON.stringify(inventario));
+    localStorage.setItem('stock_caja', cajaTotal);
+    localStorage.setItem('stock_ganancia_real', gananciaReal);
     actualizarInterfaz();
 }
 
-// --- LÓGICA DE STOCK ---
 function procesarEntrada() {
     const nombre = document.getElementById('nombreProd').value;
-    const formatoCompra = document.getElementById('formatoCompra').value;
-    const formatoVenta = document.getElementById('formatoVenta').value;
     const pCompra = parseFloat(document.getElementById('precioCompraTotal').value);
     const pVenta = parseFloat(document.getElementById('precioVentaFinal').value);
     const udsCaja = parseInt(document.getElementById('udsPorCaja').value) || 1;
     const numCajas = parseInt(document.getElementById('cantidadCajas').value) || 1;
+    const formatoCompra = document.getElementById('formatoCompra').value;
 
-    let stockFinal = 0, costeUnitario = 0, lote = 1;
-
-    if (formatoCompra === 'caja') {
-        if (formatoVenta === 'unidad') {
-            stockFinal = numCajas * udsCaja;
-            costeUnitario = pCompra / udsCaja;
-            lote = udsCaja;
-        } else {
-            stockFinal = numCajas;
-            costeUnitario = pCompra;
-            lote = 1;
-        }
-    } else {
-        stockFinal = 1;
-        costeUnitario = pCompra;
-        lote = 1;
+    if (!nombre || isNaN(pCompra) || isNaN(pVenta)) {
+        alert("Por favor, rellena los campos básicos.");
+        return;
     }
 
-    if (nombre && !isNaN(stockFinal) && !isNaN(pVenta)) {
-        inventario.push({
-            id: Date.now(),
-            nombre,
-            stock: stockFinal,
-            precioCompra: costeUnitario,
-            precioVenta: pVenta,
-            loteRecompra: lote
-        });
-        guardarYActualizar();
-        resetearFormulario();
-        switchView('view-inventory');
-    }
-}
+    let stockNuevo = (formatoCompra === 'caja') ? numCajas * udsCaja : 1;
+    
+    inventario.push({
+        nombre: nombre,
+        precioCompra: pCompra / (formatoCompra === 'caja' ? udsCaja : 1),
+        precioVenta: pVenta,
+        stock: stockNuevo
+    });
 
-function modificarStock(index, cambio) {
-    const p = inventario[index];
-    if (cambio === -1 && p.stock > 0) {
-        cajaTotal += p.precioVenta;
-        gananciaReal += (p.precioVenta - p.precioCompra);
-        p.stock--;
-    } else if (cambio === 1) {
-        p.stock += p.loteRecompra;
-    }
     guardarYActualizar();
-}
-
-function guardarYActualizar() {
-    localStorage.setItem('stock_data', JSON.stringify(inventario));
-    localStorage.setItem('stock_caja', cajaTotal.toFixed(2));
-    localStorage.setItem('stock_ganancia_real', gananciaReal.toFixed(2));
-    actualizarInterfaz();
+    resetearFormulario();
 }
 
 function actualizarInterfaz() {
     const lista = document.getElementById('listaProductos');
-    if (!lista) return;
-    lista.innerHTML = '';
-    let inversionStock = 0;
-
-    // Actualizar símbolos de moneda
-    document.querySelectorAll('.simbolo').forEach(el => el.textContent = monedaActual);
-    document.getElementById('btnMoneda').textContent = `Cambiar Moneda (Actual: ${monedaActual})`;
+    lista.innerHTML = "";
+    let inversionTotal = 0;
 
     inventario.forEach((prod, i) => {
-        inversionStock += (prod.stock * prod.precioCompra);
+        inversionTotal += (prod.precioCompra * prod.stock);
         lista.innerHTML += `
             <div class="gasto-item">
-                <div class="info">
+                <div>
                     <strong>${prod.nombre}</strong><br>
-                    <small>Stock: ${prod.stock} | ${prod.precioVenta.toFixed(2)}${monedaActual}</small>
+                    <small>Stock: ${prod.stock} | PVP: ${prod.precioVenta.toFixed(2)}€</small>
                 </div>
                 <div class="counter">
                     <button onclick="modificarStock(${i}, -1)">-</button>
@@ -112,15 +67,22 @@ function actualizarInterfaz() {
             </div>`;
     });
 
-    document.getElementById('valorTotal').textContent = inversionStock.toFixed(2);
+    document.getElementById('valorTotal').textContent = inversionTotal.toFixed(2);
     document.getElementById('cajaActual').textContent = cajaTotal.toFixed(2);
     document.getElementById('gananciaReal').textContent = gananciaReal.toFixed(2);
     document.getElementById('totalArticulos').textContent = inventario.length;
 }
 
-function toggleLogicaCompra() {
-    const esCaja = document.getElementById('formatoCompra').value === 'caja';
-    document.getElementById('seccionCaja').style.display = esCaja ? 'block' : 'none';
+function modificarStock(index, cambio) {
+    if (cambio > 0) {
+        inventario[index].stock += cambio;
+    } else if (cambio < 0 && inventario[index].stock > 0) {
+        inventario[index].stock += cambio;
+        // Si reduce stock, simulamos una venta
+        cajaTotal += inventario[index].precioVenta;
+        gananciaReal += (inventario[index].precioVenta - inventario[index].precioCompra);
+    }
+    guardarYActualizar();
 }
 
 function filtrarProductos() {
@@ -131,30 +93,17 @@ function filtrarProductos() {
 }
 
 function resetearFormulario() {
-    document.querySelectorAll('#view-add input').forEach(i => i.value = '');
+    document.querySelectorAll('input').forEach(i => i.value = '');
+}
+
+function toggleLogicaCompra() {
+    const esCaja = document.getElementById('formatoCompra').value === 'caja';
+    document.getElementById('seccionCaja').style.display = esCaja ? 'block' : 'none';
 }
 
 function limpiarInventario() {
-    if (confirm("¿Borrar todo el historial y productos?")) {
+    if (confirm("¿Vaciar todo el sistema?")) {
         localStorage.clear();
         location.reload();
-    }
-}
-
-// --- PWA ANDROID ---
-let deferredPrompt;
-function initPWA() {
-    window.addEventListener('beforeinstallprompt', (e) => {
-        e.preventDefault();
-        deferredPrompt = e;
-        document.getElementById('install-banner').style.display = 'flex';
-    });
-}
-
-async function installApp() {
-    if (deferredPrompt) {
-        deferredPrompt.prompt();
-        deferredPrompt = null;
-        document.getElementById('install-banner').style.display = 'none';
     }
 }

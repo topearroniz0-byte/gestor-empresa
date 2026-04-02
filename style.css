@@ -1,59 +1,232 @@
-/* LOGO SOLICITADO A 60PX */
-.app-logo {
-    width: 300px;
-    height: auto;
-    display: block;
-    margin: 15px auto;
-}
-
 :root {
     --bg: #0b0f1a;
     --card-bg: #161c2d;
-    --accent: #10b981;
+    --accent: #10b981;    /* Verde Stock Byte */
+    --primary: #3b82f6;   /* Azul para detalles */
     --text: #ffffff;
     --text-muted: #94a3b8;
+    --nav-bg: #1e293b;
+    --border: #2d3748;
 }
 
-body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 15px; }
+* { 
+    box-sizing: border-box; 
+    -webkit-tap-highlight-color: transparent; 
+}
 
+body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+}
 
-/* BANNER DE DESCARGA */
+/* --- PANTALLA DE BIENVENIDA (SPLASH) --- */
+#splash-screen {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: var(--bg);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    transition: opacity 0.5s ease, visibility 0.5s;
+}
+
+.splash-logo {
+    width: 120px;
+    height: auto;
+    animation: pulse 2s infinite ease-in-out;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); opacity: 0.8; }
+    50% { transform: scale(1.05); opacity: 1; }
+    100% { transform: scale(1); opacity: 0.8; }
+}
+
+/* --- CONTENEDOR PRINCIPAL --- */
+.container {
+    width: 100%;
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 20px;
+    padding-bottom: 100px; /* Espacio para la nav inferior */
+}
+
+/* --- LOGO SUPERIOR --- */
+.main-header {
+    text-align: center;
+    padding: 10px 0 25px 0;
+}
+
+.app-logo {
+    width: 350px; /* Tamaño exacto pedido */
+    height: auto;
+    filter: drop-shadow(0 0 8px rgba(16, 185, 129, 0.2));
+}
+
+/* --- BANNER DE INSTALACIÓN --- */
 .install-banner {
-    background: #1e293b;
+    background: var(--nav-bg);
     border: 1px solid var(--accent);
-    padding: 12px 15px;
-    border-radius: 14px;
+    padding: 15px;
+    border-radius: 16px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
+    animation: slideIn 0.5s ease-out;
 }
 
-.install-content { display: flex; align-items: center; gap: 10px; }
-.mini-logo { width: 25px; height: 25px; }
-.install-content strong { font-size: 0.85rem; display: block; }
-.install-content small { font-size: 0.7rem; color: var(--text-muted); }
+.install-content { display: flex; align-items: center; gap: 12px; }
+.mini-logo { width: 30px; height: 30px; border-radius: 6px; }
+.install-content strong { display: block; font-size: 0.9rem; }
+.install-content small { color: var(--text-muted); font-size: 0.75rem; }
 
 .btn-download {
     background: var(--accent);
     color: white;
     border: none;
-    padding: 8px 14px;
-    border-radius: 8px;
+    padding: 8px 16px;
+    border-radius: 10px;
     font-weight: bold;
-    font-size: 0.8rem;
     cursor: pointer;
 }
 
-/* ESTILOS DE LA COPIA DE SEGURIDAD */
-.total-badge {
-    background: linear-gradient(135deg, #3b82f6, #2563eb);
-    padding: 20px; border-radius: 16px; text-align: center; margin-bottom: 12px;
+/* --- TARJETAS Y ESTADÍSTICAS --- */
+.stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 20px;
 }
-.total-badge.secondary { background: linear-gradient(135deg, #10b981, #059669); }
 
-.card { background: var(--card-bg); padding: 20px; border-radius: 16px; margin-bottom: 20px; border: 1px solid #2d3748; }
-.input-group { display: flex; gap: 10px; margin-bottom: 10px; }
-input, select { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white; }
-.btn-add { width: 100%; padding: 15px; background: var(--accent); border: none; color: white; font-weight: bold; border-radius: 8px; cursor: pointer; }
-.btn-clear { width: 100%; background: none; border: 1px solid #ff4757; color: #ff4757; padding: 12px; border-radius: 8px; cursor: pointer; }
+.stat-card {
+    background: var(--card-bg);
+    padding: 18px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    text-align: center;
+}
+
+.stat-card h2 { margin: 5px 0; font-size: 1.4rem; color: var(--accent); }
+.stat-card small { color: var(--text-muted); text-transform: uppercase; font-size: 0.65rem; letter-spacing: 0.5px; }
+
+.card {
+    background: var(--card-bg);
+    padding: 20px;
+    border-radius: 24px;
+    border: 1px solid var(--border);
+    margin-bottom: 20px;
+}
+
+/* --- INPUTS ESTILO MODERNO --- */
+input, select {
+    width: 100%;
+    background: #0f172a;
+    border: 1px solid var(--border);
+    color: white;
+    padding: 14px;
+    border-radius: 12px;
+    margin-bottom: 12px;
+    font-size: 1rem;
+    outline: none;
+}
+
+input:focus { border-color: var(--accent); }
+
+.btn-add {
+    width: 100%;
+    padding: 16px;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 14px;
+    font-weight: bold;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.btn-add:active { transform: scale(0.98); }
+
+/* --- NAVEGACIÓN INFERIOR --- */
+.bottom-nav {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: calc(100% - 40px);
+    max-width: 400px;
+    background: rgba(30, 41, 59, 0.95);
+    backdrop-filter: blur(10px);
+    display: flex;
+    justify-content: space-around;
+    padding: 12px;
+    border-radius: 25px;
+    border: 1px solid rgba(255,255,255,0.1);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    z-index: 1000;
+}
+
+.nav-item {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.nav-item i { font-size: 1.2rem; font-style: normal; }
+.nav-item span { font-size: 0.7rem; font-weight: 500; }
+.nav-item.active { color: var(--accent); }
+
+/* --- ANIMACIONES --- */
+.app-view { display: none; animation: slideUp 0.4s ease-out; }
+.app-view.active { display: block; }
+
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideIn {
+    from { transform: translateX(100%); }
+    to { transform: translateX(0); }
+}
+.btn-delete-all {
+    width: 100%;
+    margin-top: 20px;
+    padding: 12px;
+    background: #ef4444; /* Rojo suave */
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    font-weight: bold;
+    cursor: pointer;
+    opacity: 0.8;
+}
+
+.btn-delete-all:active {
+    transform: scale(0.95);
+    background: #dc2626;
+}
+/* Para que los 3 botones de la barra inferior quepan bien */
+.bottom-nav {
+    justify-content: space-around; /* Reparte el espacio entre los 3 */
+}
+
+/* Estilo para el botón de descargar de la nav */
+#btnNavInstall {
+    color: var(--primary); /* Azul para diferenciarlo de Inicio y Añadir */
+}

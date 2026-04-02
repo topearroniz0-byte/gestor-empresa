@@ -3,108 +3,146 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Stock Byte - Control de Inventario</title>
+    <title>Stock Byte - Pro</title>
     <link rel="stylesheet" href="style.css">
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#10b981">
+    <link rel="apple-touch-icon" href="logo.png">
 </head>
 <body>
-    <header class="main-header">
-        <img src="logo.png" alt="Logo Stock Byte" class="app-logo">
-        <p class="app-description">Gestiona tus existencias en tiempo real.</p>
-    </header>
+
+    <div id="splash-screen">
+        <img src="logo.png" alt="Stock Byte Logo" class="splash-logo">
+        <h1 style="color: #10b981; margin-top: 20px; font-family: sans-serif;">Stock Byte</h1>
+    </div>
+    
+
     <div class="container">
-        <div id="installContainer" class="install-banner">
+        
+        <header class="main-header">
+    <img src="logo.png" alt="Logo" class="app-logo">
+    <div class="app-description-container">
+        <p class="app-description-text">Control inteligente de stock y beneficios.</p>
+        <p class="app-description-subtext">Tu negocio, simplificado.</p>
+    </div>
+</header>
+
+        <div id="installContainer" class="install-banner" style="display: none;">
             <div class="install-content">
                 <img src="logo.png" alt="App Logo" class="mini-logo">
-                <div id="statusText">
-                    <strong id="appTitle">Instalar Stock Byte</strong>
-                    <small id="appSub">Acceso rápido desde tu móvil</small>
+                <div>
+                    <strong>Instalar Stock Byte</strong>
+                    <small>Acceso rápido y sin conexión</small>
                 </div>
             </div>
             <button id="btnInstall" class="btn-download">Descargar</button>
         </div>
 
-
-        <div class="total-badge">
-            <small>Valor Total del Stock</small>
-            <h2><span id="valorTotal">0.00</span>€</h2>
-            <p>Artículos diferentes: <span id="totalArticulos">0</span></p>
-        </div>
-
-        <div class="total-badge secondary">
-            <small>Ventas Realizadas (Caja)</small>
-            <h2><span id="cajaActual">0.00</span>€</h2>
-            <p>Ganancia neta: <span id="gananciaReal">0.00</span>€</p>
-        </div>
-
-        <div class="card input-card">
-            <input type="text" id="nombreProd" placeholder="Nombre del producto">
-            <div class="input-group">
-                <select id="formatoCompra" onchange="toggleLogicaCompra()">
-                    <option value="suelto">Compra Individual</option>
-                    <option value="caja">Compra por Caja</option>
-                </select>
-                <select id="formatoVenta">
-                    <option value="unidad">Venta por Unidad</option>
-                    <option value="completa">Venta por Caja</option>
-                </select>
-            </div>
-            <div id="seccionCaja" style="display: none;">
-                <div class="input-group">
-                    <input type="number" id="udsPorCaja" placeholder="Uds/caja">
-                    <input type="number" id="cantidadCajas" placeholder="Nº cajas">
+        <section id="view-inventory" class="app-view active">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <small>Caja Hoy</small>
+                    <h2 id="cajaActual">0.00</h2><span class="simbolo">€</span>
+                </div>
+                <div class="stat-card">
+                    <small>Ganancia</small>
+                    <h2 id="gananciaReal">0.00</h2><span class="simbolo">€</span>
                 </div>
             </div>
-            <div class="input-group">
-                <input type="number" id="precioCompraTotal" placeholder="Coste (€)" step="0.01">
-                <input type="number" id="precioVentaFinal" placeholder="PVP (€)" step="0.01">
-            </div>
-            <button class="btn-add" onclick="procesarEntrada()">Añadir al Inventario</button>
+            <div class="card">
+    <input type="text" id="buscador" placeholder="🔍 Buscar producto..." oninput="filtrarProductos()">
+    <div id="listaProductos" class="task-list"></div>
+    
+    <button onclick="confirmarBorrado()" class="btn-delete-all">Vaciar Todo el Historial</button>
+</div>
+
+
+        </section>
+
+        <section id="view-add" class="app-view">
+    <div class="card">
+        <h3>+ Nuevo Producto</h3>
+        <input type="text" id="nombreProd" placeholder="Nombre del producto">
+        
+        <label style="display:block; margin-bottom:8px; font-size:0.8rem; color:var(--accent);">Formato de compra:</label>
+        <select id="tipoEntrada" onchange="toggleCajaInput()">
+            <option value="unidad">Unidad suelta</option>
+            <option value="caja">Caja / Pack</option>
+        </select>
+
+        <div id="divUnidadesPorCaja" style="display: none; margin-top: 10px;">
+            <small style="color:var(--text-muted)">¿Cuántas unidades trae la caja?</small>
+            <input type="number" id="unidadesPorCaja" placeholder="Ejemplo: 12, 24, 50...">
         </div>
 
-        <div class="card list-card">
-            <div class="list-header">
-                <h3>Inventario</h3>
-                <input type="text" id="buscador" placeholder="🔍 Buscar..." oninput="filtrarProductos()">
-            </div>
-            <div id="listaProductos"></div>
+        <div class="input-group" style="margin-top:15px;">
+            <input type="number" id="precioCompraTotal" placeholder="Precio total de la COMPRA (€)">
+            <input type="number" id="precioVentaFinal" placeholder="Precio de VENTA por unidad (€)">
         </div>
+        
+        <button class="btn-add" onclick="procesarEntrada()">Guardar en Stock</button>
+    </div>
+</section>
 
-        <button onclick="limpiarInventario()" class="btn-clear">Vaciar Datos del Sistema</button>
+        <nav class="bottom-nav">
+    <button onclick="switchView('view-inventory', this)" class="nav-item active">
+        <i>🏠</i><span>Inicio</span>
+    </button>
+
+    <button id="btnNavInstall" class="nav-item" style="display: none;">
+        <i>📥</i><span>Descargar</span>
+    </button>
+
+    <button onclick="switchView('view-add', this)" class="nav-item">
+        <i>➕</i><span>Añadir</span>
+    </button>
+</nav>
     </div>
 
     <script src="script.js"></script>
-    <script>
-        let deferredPrompt;
-        const btnInstall = document.getElementById('btnInstall');
-        const appTitle = document.getElementById('appTitle');
-        const appSub = document.getElementById('appSub');
-
-        // Detectar si ya es app instalada
-        if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) {
-            btnInstall.innerText = "✓";
-            btnInstall.style.background = "#3b82f6"; 
-            appTitle.innerText = "Versión Actualizada";
-            appSub.innerText = "Stock Byte v2.0 - Al día";
-        }
-
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-        });
-
-        btnInstall.addEventListener('click', async () => {
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                const { outcome } = await deferredPrompt.userChoice;
-                if (outcome === 'accepted') deferredPrompt = null;
-            } else if (btnInstall.innerText === "✓") {
-                alert("Ya tienes instalada la última versión.");
-            } else {
-                alert("Para instalar: En iPhone usa 'Compartir' -> 'Añadir a pantalla de inicio'.");
+   <script>
+    // 1. Splash Screen
+    window.addEventListener('load', () => {
+        setTimeout(() => {
+            const splash = document.getElementById('splash-screen');
+            if(splash) {
+                splash.style.opacity = '0';
+                setTimeout(() => splash.style.visibility = 'hidden', 500);
             }
-        });
-    </script>
+        }, 2000);
+    });
+
+    // 2. Lógica de Instalación (Móvil y PC)
+    let deferredPrompt;
+    const navInstallBtn = document.getElementById('btnNavInstall');
+    const installBanner = document.getElementById('installContainer');
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        if (navInstallBtn) navInstallBtn.style.display = 'flex';
+        if (installBanner) installBanner.style.display = 'flex';
+    });
+
+    async function accionInstalar() {
+        if (!deferredPrompt) {
+            alert("Para instalar en PC, busca el icono '+' o la flecha en la barra de direcciones de tu navegador.");
+            return;
+        }
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        if (outcome === 'accepted') {
+            if (navInstallBtn) navInstallBtn.style.display = 'none';
+            if (installBanner) installBanner.style.display = 'none';
+        }
+        deferredPrompt = null;
+    }
+
+    // Asignar la función a los botones
+    if (navInstallBtn) navInstallBtn.addEventListener('click', accionInstalar);
+    if (document.getElementById('btnInstall')) {
+        document.getElementById('btnInstall').addEventListener('click', accionInstalar);
+    }
+</script>
 </body>
 </html>

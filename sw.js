@@ -1,4 +1,4 @@
-const CACHE_NAME = 'stock-byte-v2.0'; // Cambia el v2.0 para forzar actualización
+const CACHE_NAME = 'stock-byte-v1';
 const ASSETS = [
   './',
   './index.html',
@@ -8,7 +8,7 @@ const ASSETS = [
   './logo.png'
 ];
 
-// Instalación: Guarda los archivos en la memoria del móvil
+// Instalación: Guarda los archivos en caché
 self.addEventListener('install', (e) => {
   self.skipWaiting();
   e.waitUntil(
@@ -16,7 +16,7 @@ self.addEventListener('install', (e) => {
   );
 });
 
-// Activación: Borra versiones viejas de la app
+// Activación: Limpia versiones antiguas
 self.addEventListener('activate', (e) => {
   e.waitUntil(
     caches.keys().then((keys) => {
@@ -27,7 +27,7 @@ self.addEventListener('activate', (e) => {
   );
 });
 
-// Peticiones: Sirve la app desde el cache para que sea rápida y funcione offline
+// Estrategia de carga: Primero caché, luego red
 self.addEventListener('fetch', (e) => {
   e.respondWith(
     caches.match(e.request).then((res) => res || fetch(e.request))

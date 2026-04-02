@@ -7,8 +7,10 @@
     --danger: #ef4444;
 }
 
+* { box-sizing: border-box; }
+
 body {
-    font-family: 'Segoe UI', sans-serif;
+    font-family: 'Segoe UI', system-ui, sans-serif;
     background: var(--bg);
     color: var(--text);
     margin: 0;
@@ -20,8 +22,8 @@ body {
 .container { width: 100%; max-width: 500px; }
 
 .main-header { text-align: center; margin-bottom: 25px; }
-.app-logo { width: 100%; max-width: 500px; height: auto; }
-.app-description { color: var(--text-muted); font-size: 0.9rem; margin-top: 10px; }
+.app-logo { width: 100%; max-width: 500px; height: auto; display: block; margin: 0 auto; }
+.app-description { color: var(--text-muted); font-size: 0.9rem; margin-top: 12px; line-height: 1.5; }
 
 .total-badge {
     background: linear-gradient(135deg, #3b82f6, #2563eb);
@@ -29,9 +31,16 @@ body {
     border-radius: 16px;
     text-align: center;
     margin-bottom: 10px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
 }
 
-.total-badge.secondary { background: linear-gradient(135deg, #10b981, #059669); }
+.total-badge.secondary { 
+    background: linear-gradient(135deg, #10b981, #059669); 
+    margin-bottom: 20px;
+}
+
+.total-badge h2 { margin: 10px 0; font-size: 2rem; }
+.total-badge small { text-transform: uppercase; letter-spacing: 1px; opacity: 0.9; }
 
 .card { background: var(--card-bg); padding: 20px; border-radius: 16px; margin-bottom: 20px; }
 
@@ -43,6 +52,7 @@ input, select {
     border: 1px solid #334155;
     background: #0f172a;
     color: white;
+    font-size: 1rem;
 }
 
 .btn-add {
@@ -54,6 +64,16 @@ input, select {
     font-weight: bold;
     border-radius: 8px;
     cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.btn-add:active { opacity: 0.8; }
+
+.list-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
 }
 
 .gasto-item {
@@ -69,8 +89,7 @@ input, select {
     align-items: center;
     background: #334155;
     border-radius: 8px;
-    padding: 5px;
-    gap: 10px;
+    padding: 4px;
 }
 
 .counter button {
@@ -78,20 +97,24 @@ input, select {
     border: none;
     color: white;
     font-weight: bold;
+    font-size: 1.2rem;
     cursor: pointer;
-    padding: 5px 10px;
+    padding: 5px 12px;
 }
 
+.counter span { min-width: 30px; text-align: center; font-weight: bold; }
 .empty { color: var(--danger); }
 
-.delete-btn { background: none; border: none; cursor: pointer; }
+.delete-btn { background: none; border: none; cursor: pointer; font-size: 1.1rem; filter: grayscale(1); }
+.delete-btn:hover { filter: grayscale(0); }
 
 .btn-clear {
     width: 100%;
-    background: none;
+    background: transparent;
     border: 1px solid var(--danger);
     color: var(--danger);
-    padding: 10px;
+    padding: 12px;
     border-radius: 8px;
     cursor: pointer;
+    margin-top: 10px;
 }

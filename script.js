@@ -13,9 +13,7 @@ function procesarEntrada() {
     const udsCaja = parseInt(document.getElementById('udsPorCaja').value) || 1;
     const numCajas = parseInt(document.getElementById('cantidadCajas').value) || 1;
 
-    let stockFinal = 0;
-    let costeUnitario = 0;
-    let lote = 1;
+    let stockFinal = 0, costeUnitario = 0, lote = 1;
 
     if (formatoCompra === 'caja') {
         if (formatoVenta === 'unidad') {
@@ -62,13 +60,14 @@ function modificarStock(index, cambio) {
 
 function guardarYActualizar() {
     localStorage.setItem('stock_data', JSON.stringify(inventario));
-    localStorage.setItem('stock_caja', cajaTotal);
-    localStorage.setItem('stock_ganancia_real', gananciaReal);
+    localStorage.setItem('stock_caja', cajaTotal.toFixed(2));
+    localStorage.setItem('stock_ganancia_real', gananciaReal.toFixed(2));
     actualizarInterfaz();
 }
 
 function actualizarInterfaz() {
     const lista = document.getElementById('listaProductos');
+    if (!lista) return;
     lista.innerHTML = '';
     let inversionStock = 0;
 
@@ -110,7 +109,7 @@ function borrarProducto(i) {
 }
 
 function limpiarInventario() {
-    if (confirm("¿Reiniciar todo?")) {
+    if (confirm("¿Reiniciar todo el sistema? Se borrarán ventas y stock.")) {
         localStorage.clear();
         location.reload();
     }

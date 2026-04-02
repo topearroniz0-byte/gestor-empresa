@@ -18,22 +18,22 @@
         <div class="total-badge">
             <small>Valor Total del Stock</small>
             <h2><span id="valorTotal">0.00</span>€</h2>
-            <p>Productos registrados: <span id="totalArticulos">0</span></p>
+            <p>Artículos diferentes: <span id="totalArticulos">0</span></p>
         </div>
 
         <div class="total-badge secondary">
             <small>Ventas Realizadas (Caja)</small>
             <h2><span id="cajaActual">0.00</span>€</h2>
-            <p>Ganancia real: <span id="gananciaReal">0.00</span>€</p>
+            <p>Ganancia neta: <span id="gananciaReal">0.00</span>€</p>
         </div>
 
         <div class="card input-card">
-            <input type="text" id="nombreProd" placeholder="Nombre del producto">
+            <input type="text" id="nombreProd" placeholder="Nombre del producto (ej: Monster)">
             
             <div class="input-group">
                 <select id="formatoCompra" onchange="toggleLogicaCompra()">
                     <option value="suelto">Producto Suelto</option>
-                    <option value="caja">Caja de Productos</option>
+                    <option value="caja">Compra por Caja</option>
                 </select>
                 <select id="formatoVenta">
                     <option value="unidad">Venta por Unidad</option>
@@ -49,8 +49,8 @@
             </div>
 
             <div class="input-group">
-                <input type="number" id="precioCompraTotal" placeholder="Precio Compra (€)" step="0.01">
-                <input type="number" id="precioVentaFinal" placeholder="Precio Venta (€)" step="0.01">
+                <input type="number" id="precioCompraTotal" placeholder="Coste Compra (€)" step="0.01">
+                <input type="number" id="precioVentaFinal" placeholder="PVP Venta (€)" step="0.01">
             </div>
             <button class="btn-add" onclick="procesarEntrada()">Añadir al Inventario</button>
         </div>
@@ -58,12 +58,12 @@
         <div class="card list-card">
             <div class="list-header">
                 <h3>Inventario</h3>
-                <input type="text" id="buscador" placeholder="🔍 Buscar..." oninput="filtrarProductos()">
+                <input type="text" id="buscador" placeholder="🔍 Buscar..." oninput="filtrarProductos()" style="width: 150px; padding: 5px;">
             </div>
             <div id="listaProductos"></div>
         </div>
 
-        <button onclick="limpiarInventario()" class="btn-clear">Vaciar Todo</button>
+        <button onclick="limpiarInventario()" class="btn-clear">Vaciar Datos del Sistema</button>
     </div>
     <script src="script.js"></script>
 </body>

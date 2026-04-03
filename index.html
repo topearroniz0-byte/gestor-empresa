@@ -39,26 +39,38 @@
             <button id="btnInstall" class="btn-download">Descargar</button>
         </div>
 
-        <section id="view-inventory" class="app-view active">
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <small>Caja Hoy</small>
-                    <h2 id="cajaActual">0.00</h2><span class="simbolo">€</span>
-                </div>
-                <div class="stat-card">
-                    <small>Ganancia</small>
-                    <h2 id="gananciaReal">0.00</h2><span class="simbolo">€</span>
-                </div>
+       <section id="view-inventory" class="app-view active">
+    <div class="stats-grid">
+        <div class="stat-card">
+            <small>Caja Hoy</small>
+            <div>
+                <h2 id="cajaActual">0.00</h2><span class="simbolo">€</span>
             </div>
-            <div class="card">
-    <input type="text" id="buscador" placeholder="🔍 Buscar producto..." oninput="filtrarProductos()">
-    <div id="listaProductos" class="task-list"></div>
-    
-    <button onclick="confirmarBorrado()" class="btn-delete-all">Vaciar Todo el Historial</button>
-</div>
+        </div>
+        <div class="stat-card">
+            <small>Ganancia</small>
+            <div>
+                <h2 id="gananciaReal">0.00</h2><span class="simbolo">€</span>
+            </div>
+        </div>
+    </div>
 
+    <div class="card">
+        <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+            <input type="text" id="buscador" placeholder="🔍 Buscar o escanear..." oninput="filtrarProductos()" style="margin-bottom: 0; flex-grow: 1;">
+            <button onclick="abrirEscanerBusqueda()" class="btn-scan" style="padding: 0 15px; background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; font-size: 1.2rem;">📷</button>
+        </div>
 
-        </section>
+        <div id="reader-search-container" style="display: none; margin-bottom: 20px; border: 2px solid var(--accent); border-radius: 15px; overflow: hidden; position: relative;">
+            <div id="reader-search" style="width: 100%;"></div>
+            <button onclick="cerrarEscanerBusqueda()" class="btn-delete-all" style="margin-top: 0; border-radius: 0; background: #ef4444;">Cancelar Escaneo</button>
+        </div>
+
+        <div id="listaProductos" class="task-list"></div>
+        
+        <button onclick="borrarTodo()" class="btn-delete-all">Vaciar Todo el Historial</button>
+    </div>
+</section>
 
         <section id="view-add" class="app-view">
     <div class="card">

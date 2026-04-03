@@ -88,6 +88,54 @@ function modificarStock(index, cantidad) {
 }
 
 // 4. ESCÁNER (HTML5-QRCode)
+let html5QrCodeSearch;
+
+async function abrirEscanerBusqueda() {
+    const container = document.getElementById('reader-search-container');
+    container.style.display = 'block';
+    
+    html5QrCodeSearch = new Html5Qrcode("reader-search");
+    
+    const config = { 
+        fps: 10, 
+        qrbox: { width: 250, height: 150 },
+        aspectRatio: 1.0 
+    };
+
+    try {
+        await html5QrCodeSearch.start(
+            { facingMode: "environment" }, 
+            config,
+            (decodedText) => {
+                // Inserta el código en el buscador
+                const input = document.getElementById('buscador');
+                input.value = decodedText;
+                
+                // Ejecuta el filtro de la lista
+                filtrarProductos();
+                
+                // Cierra cámara y vibra
+                cerrarEscanerBusqueda();
+                if (navigator.vibrate) navigator.vibrate(200);
+            }
+        );
+    } catch (err) {
+        console.error("Error al abrir cámara:", err);
+        alert("No se pudo acceder a la cámara.");
+        container.style.display = 'none';
+    }
+}
+
+function cerrarEscanerBusqueda() {
+    if (html5QrCodeSearch) {
+        html5QrCodeSearch.stop().then(() => {
+            document.getElementById('reader-search-container').style.display = 'none';
+            html5QrCodeSearch = null;
+        }).catch(err => console.error("Error al detener cámara:", err));
+    } else {
+        document.getElementById('reader-search-container').style.display = 'none';
+    }
+}
 let html5QrCode;
 
 async function abrirEscaner() {
